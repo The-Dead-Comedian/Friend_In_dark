@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "friend-in-the-dark",
+	"version": "${version}",
+	"name": "Friend in the dark",
+	"description": "This is an example description! Tell everyone what your mod is about!",
+	"authors": [
+		"Dead Comedian!"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/friend-in-the-dark/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.deadcomedian.friend.FriendInTheDark"
+		],
+		"client": [
+			"com.deadcomedian.friend.FriendInTheDarkClient"
+		],
+		"fabric-datagen": [
+			"com.deadcomedian.friend.FriendInTheDarkDataGenerator"
+		]
+	},
+	"mixins": [
+		"friend-in-the-dark.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.11",
+		"minecraft": "~1.20.1",
+		"java": ">=17",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
