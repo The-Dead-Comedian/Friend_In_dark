@@ -3,7 +3,6 @@ package com.deadcomedian.friend.entity.custom;
 import com.deadcomedian.friend.entity.ai.DwellerAttackGoal;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.brain.task.SonicBoomTask;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
@@ -20,22 +19,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+
 public class DwellerEntity extends HostileEntity {
-    @Nullable
-    private BlockPos songSource;
-    private boolean songPlaying;
-    public DwellerEntity(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
-    }
 
-    //animation
+   //attacking data
 
-
-    public final AnimationState idleAnimationState = new AnimationState();
-    private int idleAnimationTimeout = 0;
-
-    public final AnimationState attackAnimationState = new AnimationState();
-    public int attackAnimationTimeout = 0;
     private static final TrackedData<Boolean> ATTACKING =
             DataTracker.registerData(DwellerEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
 
@@ -48,12 +36,47 @@ public class DwellerEntity extends HostileEntity {
         return this.dataTracker.get(ATTACKING);
     }
 
+
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
         this.dataTracker.startTracking(ATTACKING, false);
     }
+    //dance
+    @Nullable
+    private BlockPos songSource;
+    private boolean songPlaying;
+    public void tickMovement() {
+        if (this.songSource == null || !this.songSource.isWithinDistance(this.getPos(), 3.46) || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
+            this.songPlaying = false;
+            this.songSource = null;
+        }
 
+
+        super.tickMovement();
+
+    }
+    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
+        this.songSource = songPosition;
+        this.songPlaying = playing;
+    }
+    public boolean isSongPlaying() {
+        return this.songPlaying;
+    }
+
+
+
+    public DwellerEntity(EntityType<? extends HostileEntity> entityType, World world) {
+        super(entityType, world);
+    }
+
+
+
+    //animation
+    public final AnimationState idleAnimationState = new AnimationState();
+    public final AnimationState attackAnimationState = new AnimationState();
+    private int idleAnimationTimeout = 0;
+    public int attackAnimationTimeout = 0;
     private void setupAnimationStates() {
         if (this.idleAnimationTimeout <= 0) {
             this.idleAnimationTimeout = this.random.nextInt(20) + 40;
@@ -75,47 +98,22 @@ public class DwellerEntity extends HostileEntity {
         }
     }
     @Override
-    public boolean tryAttack(Entity target) {
-        this.getWorld().sendEntityStatus(this, EntityStatuses.PLAY_ATTACK_SOUND);
-        this.playSound(SoundEvents.ENTITY_WARDEN_ATTACK_IMPACT, 10.0f, this.getSoundPitch());
-
-        return super.tryAttack(target);
-    }
-
-    @Override
     protected void updateLimbs(float posDelta) {
         float f = this.getPose() == EntityPose.STANDING ? Math.min(posDelta * 6.0f, 1.0f) : 0.0f;
         this.limbAnimator.updateLimbs(f, 0.2f);
     }
-
     @Override
     public void tick() {
         super.tick();
         if(this.getWorld().isClient()) {
             setupAnimationStates();
+
         }
     }
+
+
 
     //funky stuff
-    public void tickMovement() {
-        if (this.songSource == null || !this.songSource.isWithinDistance(this.getPos(), 3.46) || !this.getWorld().getBlockState(this.songSource).isOf(Blocks.JUKEBOX)) {
-            this.songPlaying = false;
-            this.songSource = null;
-        }
-
-
-        super.tickMovement();
-
-    }
-
-    public void setNearbySongPlaying(BlockPos songPosition, boolean playing) {
-        this.songSource = songPosition;
-        this.songPlaying = playing;
-    }
-    public boolean isSongPlaying() {
-        return this.songPlaying;
-    }
-
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
@@ -123,12 +121,12 @@ public class DwellerEntity extends HostileEntity {
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1D));
         this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 4f));
         this.goalSelector.add(6, new LookAroundGoal(this));
-        this.goalSelector.add(7, new MeleeAttackGoal(this,1D, true));
+        this.goalSelector.add(7, new com.deadcomedian.friend.entity.ai.DwellerAttackGoal(this,1D, true));
         this.targetSelector.add(1, new ActiveTargetGoal(this, PlayerEntity.class, true));
     }
     public static DefaultAttributeContainer.Builder createDwellerAttributes() {
         return MobEntity.createMobAttributes()
-                .add(EntityAttributes.GENERIC_MAX_HEALTH, 15)
+                .add(EntityAttributes.GENERIC_MAX_HEALTH, 99999999)
                 .add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.2f)
                 .add(EntityAttributes.GENERIC_ARMOR, 0.5f)
                 .add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 2);
@@ -138,6 +136,8 @@ public class DwellerEntity extends HostileEntity {
 
 
 
+
+//sound events
     @Nullable
     @Override
     protected SoundEvent getAmbientSound() {

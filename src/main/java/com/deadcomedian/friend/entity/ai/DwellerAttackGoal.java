@@ -2,9 +2,15 @@ package com.deadcomedian.friend.entity.ai;
 
 import com.deadcomedian.friend.entity.custom.DwellerEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.goal.Goal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
+import net.minecraft.entity.ai.pathing.Path;
 import net.minecraft.entity.mob.PathAwareEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.util.Hand;
+
+import java.util.EnumSet;
 
 public class DwellerAttackGoal extends MeleeAttackGoal {
     private final DwellerEntity entity;
