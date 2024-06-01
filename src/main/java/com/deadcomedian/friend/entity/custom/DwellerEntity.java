@@ -36,7 +36,19 @@ public class DwellerEntity extends HostileEntity {
         return this.dataTracker.get(ATTACKING);
     }
 
-
+    @Override
+public boolean tryAttack(Entity target){
+        boolean bl = super.tryAttack(target);
+        if(bl){
+            float f = this.getWorld().getLocalDifficulty(this.getBlockPos()).getLocalDifficulty();
+            if(this.getMainHandStack().isEmpty() && this.isOnFire() && this.random.nextFloat() < f * 0.3F){
+                target.setOnFireFor(2 * (int)f);
+            }
+        }
+        System.out.println("giga");
+        setAttacking(true);
+        return bl;
+}
     @Override
     protected void initDataTracker() {
         super.initDataTracker();
@@ -117,11 +129,10 @@ public class DwellerEntity extends HostileEntity {
     @Override
     protected void initGoals() {
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new DwellerAttackGoal(this, 1D, true));
+        this.goalSelector.add(1, new DwellerAttackGoal(this, 1f, true));
         this.goalSelector.add(4, new WanderAroundFarGoal(this, 1D));
         this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 4f));
         this.goalSelector.add(6, new LookAroundGoal(this));
-        this.goalSelector.add(7, new com.deadcomedian.friend.entity.ai.DwellerAttackGoal(this,1D, true));
         this.targetSelector.add(1, new ActiveTargetGoal(this, PlayerEntity.class, true));
     }
     public static DefaultAttributeContainer.Builder createDwellerAttributes() {
