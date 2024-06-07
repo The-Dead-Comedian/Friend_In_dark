@@ -73,9 +73,9 @@ public class DwellerModel <T extends DwellerEntity> extends SinglePartEntityMode
 		this.animateMovement(ModAnimations.WALK, limbAngle, limbDistance, 2f, 2.5f);
 		this.updateAnimation(entity.idleAnimationState, ModAnimations.IDLE, animationProgress, 1f);
 		this.updateAnimation(entity.attackAnimationState, ModAnimations.ATTACK, animationProgress, 1f);
-		//this.updateAnimation(entity.griddyAnimationState, ModAnimations.GRIDDY, animationProgress, 1f);
-		//this.updateAnimation(entity.gangamAnimationState, ModAnimations.GANGAM, animationProgress, 1f);
-		//this.updateAnimation(entity.dameAnimationState, ModAnimations.DAME, animationProgress, 1f);
+		this.updateAnimation(entity.griddyAnimationState, ModAnimations.GRIDDY, animationProgress, 1f);
+		this.updateAnimation(entity.gangamAnimationState, ModAnimations.GANGAM, animationProgress, 1f);
+
 
 
 	}

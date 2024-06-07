@@ -48,7 +48,6 @@ public class DwellerAttackGoal extends MeleeAttackGoal {
         }
     }
 
-    // Has additional paramter and different method body
     private boolean isEnemyWithinAttackDistance(LivingEntity pEnemy, double pDistToEnemySqr) {
         return pDistToEnemySqr <= this.getSquaredMaxAttackDistance(pEnemy);
     }
