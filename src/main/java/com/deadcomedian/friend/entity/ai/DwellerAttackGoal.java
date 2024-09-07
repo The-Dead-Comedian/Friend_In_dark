@@ -26,7 +26,6 @@ public class DwellerAttackGoal extends MeleeAttackGoal {
         ticksUntilNextAttack = 20;
     }
 
-
     @Override
     protected void attack(LivingEntity pEnemy, double pDistToEnemySqr) {
         if (isEnemyWithinAttackDistance(pEnemy, pDistToEnemySqr)) {
@@ -52,10 +51,10 @@ public class DwellerAttackGoal extends MeleeAttackGoal {
         return pDistToEnemySqr <= this.getSquaredMaxAttackDistance(pEnemy);
     }
 
-
     protected boolean isTimeToStartAttackAnimation() {
         return this.ticksUntilNextAttack <= attackDelay;
     }
+
     protected void resetAttackCooldown() {
         this.ticksUntilNextAttack = this.getTickCount(attackDelay * 2);
     }
